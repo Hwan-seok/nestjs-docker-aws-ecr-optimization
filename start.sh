@@ -5,7 +5,7 @@ green=$( tput setaf 2 )
 reset=$( tput sgr0 )
 
 DOCKER_REMOTE_REPOSITORY=069343908751.dkr.ecr.ap-northeast-2.amazonaws.com
-VERSION=$(cat package.json | jq '.version' | tr -d '"')v
+VERSION=v$(cat package.json | jq '.version' | tr -d '"')
 REGION=ap-northeast-2
 PROFILE=damin
 IMAGE_NAME=repo-dev
