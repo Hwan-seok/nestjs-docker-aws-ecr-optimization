@@ -15,6 +15,7 @@ read UPDATE_TYPE
 
 [[ "$UPDATE_TYPE" =~ ^(major|minor|patch)$ ]] || { echo "${red} Please Type One of {major, minor, patch}"; exit 1; } 
 
+npm version $UPDATE_TYPE
 aws ecr get-login-password --region $REGION --profile $PROFILE | docker login --username AWS --password-stdin $DOCKER_REMOTE_REPOSITORY
 
 docker build -t $IMAGE_NAME:$VERSION --build-arg NODE_ENV=dev .
@@ -27,6 +28,7 @@ if [ $REMOTE_VERSION != $VERSION ] || [ -s "./error.log" ]
 then
     echo "${red}Newly Pushed Image Digest Not Changed Or Package Version Not Updated"
     echo "Remote Version: $REMOTE_VERSION, Pushed Version: $VERSION, See error.log If Exists"
+    cat error.log
     for i in `seq 0 5` 
     do
         echo "${red}FAILED"
