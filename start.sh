@@ -2,12 +2,18 @@
 
 red=$( tput setaf 1 )
 green=$( tput setaf 2 )
+reset=$( tput sgr0 )
 
 DOCKER_REMOTE_REPOSITORY=069343908751.dkr.ecr.ap-northeast-2.amazonaws.com
 VERSION=$(cat package.json | jq '.version' | tr -d '"')v
 REGION=ap-northeast-2
 PROFILE=damin
 IMAGE_NAME=repo-dev
+
+echo -n "${green} Please type a version update type {major, minor, patch}: "
+read UPDATE_TYPE
+
+[[ "$UPDATE_TYPE" =~ ^(major|minor|patch)$ ]] || { echo "${red} Please Type One of {major, minor, patch}"; exit 1; } 
 
 aws ecr get-login-password --region $REGION --profile $PROFILE | docker login --username AWS --password-stdin $DOCKER_REMOTE_REPOSITORY
 
