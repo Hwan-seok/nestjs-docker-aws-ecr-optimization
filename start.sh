@@ -10,12 +10,12 @@ REGION=ap-northeast-2
 PROFILE=damin
 IMAGE_NAME=repo-dev
 
-echo -n "${green} Please type a version update type {major, minor, patch}: "
+echo -n "${green} Please type a version update type {major, minor, patch or implicit version (current: $VERSION)}: "
 read UPDATE_TYPE
 
-[[ "$UPDATE_TYPE" =~ ^(major|minor|patch)$ ]] || { echo "${red} Please Type One of {major, minor, patch}"; exit 1; } 
+[[ "$UPDATE_TYPE" =~ ^(major|minor|patch|[0-9]+\.[0-9]+\.[0-9]+(-[0-9]+)?)$ ]] || { echo "${red} Please Type One of {major, minor, patch or implicit version(ex. 1.0.0)}"; exit 1; } 
 
-npm version $UPDATE_TYPE
+npm version $UPDATE_TYPE -no-git-tag-version
 aws ecr get-login-password --region $REGION --profile $PROFILE | docker login --username AWS --password-stdin $DOCKER_REMOTE_REPOSITORY
 
 docker build -t $IMAGE_NAME:$VERSION --build-arg NODE_ENV=dev .
